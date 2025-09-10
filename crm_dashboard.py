@@ -3,6 +3,9 @@ import pandas as pd
 import requests
 from datetime import date
 
+# 🔗 URL-ul public al backendului FastAPI
+API_URL = "https://crm-api-galati.onrender.com"
+
 st.set_page_config(page_title="CRM Galați", layout="wide")
 st.title("CRM Galați — Motor de căutare și agendă")
 
@@ -12,7 +15,7 @@ cui_or_name = st.text_input("Introduceți CUI sau fragment de denumire")
 
 if st.button("Caută"):
     try:
-        response = requests.get(f"http://127.0.0.1:8000/firme?q={cui_or_name}")
+        response = requests.get(f"{API_URL}/firme?q={cui_or_name}")
         if response.status_code == 200:
             results = response.json()
             if results:
@@ -44,7 +47,7 @@ if st.button("Încarcă agenda"):
     else:
         cui = st.session_state.selected_firm["cui"]
         try:
-            response = requests.get(f"http://127.0.0.1:8000/agenda?cui={cui}&data={selected_date}")
+            response = requests.get(f"{API_URL}/agenda?cui={cui}&data={selected_date}")
             if response.status_code == 200:
                 activitati = response.json()
                 if activitati:
@@ -76,7 +79,7 @@ if "selected_firm" in st.session_state and selected_date:
             "comentariu": comentariu
         }
         try:
-            response = requests.post("http://127.0.0.1:8000/agenda", json=payload)
+            response = requests.post(f"{API_URL}/agenda", json=payload)
             if response.status_code == 200:
                 st.success("✅ Activitate salvată cu succes.")
             else:
